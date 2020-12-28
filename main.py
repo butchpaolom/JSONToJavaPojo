@@ -13,6 +13,8 @@ class JsonToBean:
 
     def __init__(self):
         self.get_config()
+
+    def start(self):
         self.get_bean_name()
         self.will_generate_get_set()
         self.get_json_response()
@@ -51,9 +53,10 @@ class JsonToBean:
     def create_properties_and_getters_setters(self):
         for key, value in self.json_response.items():
             key_cap = key.capitalize()
-            not_string_type = f"{self.config['collection']}<Insert{key_cap}TypeHere>" if type(
+            not_string_type = f"{self.config['collection']}<Insert{key[0].capitalize() + key[1:]}TypeHere>" if type(
                 value) is list else f"Insert{key_cap}TypeHere"
-            data_type = 'String' if type(value) is str else not_string_type
+            data_type = 'String' if type(value) is str or type(
+                value) is int else not_string_type
             self.__add_property(data_type, key)
             if self.has_get_set:
                 self.__add_getter_setter(data_type, key)
@@ -74,6 +77,3 @@ class JsonToBean:
             clipboard.copy(self.java_class)
         finally:
             print("The java class is copied to clipboard successfully.")
-
-
-a = JsonToBean()
